@@ -5,7 +5,6 @@ public class JogadorHumano extends Jogador {
 
     @Override
     public boolean jogar(Tabuleiro tabuleiro, String nomeDaPeca, int numeroDaCasa) {
-        // Implementação simulada da jogada do humano
         System.out.println("Jogador Humano (" + getCor() + ") movendo " + nomeDaPeca);
         return true; 
     }
