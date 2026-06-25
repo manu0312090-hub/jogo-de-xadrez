@@ -1,46 +1,73 @@
 public class Tabuleiro {
-    private String[][] casas = new String[8][8];
-    private int jogadasSimuladas = 0;
+    private Peca[][] casas;
 
     public Tabuleiro() {
+        this.casas = new Peca[8][8];
+    }
+
+    public Boolean casaLivre(String casa) {
+        if (casa == null || casa.length() != 2) return false;
+        
        
+        int coluna = casa.charAt(0) - 'a'; 
+        int linha = Character.getNumericValue(casa.charAt(1)) - 1; 
+
+        if (linha < 0 || linha > 7 || coluna < 0 || coluna > 7) {
+            return false;
+        }
+
+        return casas[linha][coluna] == null;
+    }
+    public void colocarPeca(Peca peca, int linha, int coluna) {
+        this.casas[linha][coluna] = peca;
+    }
+
+    public void exibir() {
+        System.out.println("\n   a   b   c   d   e   f   g   h");
+        for (int i = 7; i >= 0; i--) { 
+            System.print((i + 1) + " ");
+            for (int j = 0; j < 8; j++) {
+                if (casas[i][j] == null) {
+                    System.out.print("[   ]");
+                } else {
+                    System.out.print("[" + casas[i][j].getCodigo() + "]");
+                }
+            }
+            System.out.println(" " + (i + 1));
+        }
+        System.out.println("   a   b   c   d   e   f   g   h\n");
+    }
+
+    public boolean moverPecaPorCodigo(String codigoPeca, String casaDestino) {
+        int colDestino = casaDestino.charAt(0) - 'a';
+        int linDestino = Character.getNumericValue(casaDestino.charAt(1)) - 1;
+
+        int linAtual = -1, colAtual = -1;
+        Peca pecaParaMover = null;
+
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                casas[i][j] = "   ";
+                if (casas[i][j] != null && casas[i][j].getCodigo().equalsIgnoreCase(codigoPeca)) {
+                    pecaParaMover = casas[i][j];
+                    linAtual = i;
+                    colAtual = j;
+                    break;
+                }
             }
         }
-        
-    
-        colocarPecas();
-        
-    
-        mostrar();
-    }
 
-    private void colocarPecas() {
-
-        casas[0][0] = "T1p"; casas[0][1] = "H1p"; casas[0][2] = "B1p"; casas[0][3] = "Q0p";
-        casas[0][4] = "K0p"; casas[0][5] = "B2p"; casas[0][6] = "H2p"; casas[0][7] = "T2p";
-        for (int j = 0; j < 8; j++) casas[1][j] = "P" + (j + 1) + "p";
-
-        for (int j = 0; j < 8; j++) casas[6][j] = "P" + (j + 1) + "b";
-        casas[7][0] = "T1b"; casas[7][1] = "H1b"; casas[7][2] = "B1b"; casas[7][3] = "Q0b";
-        casas[7][4] = "K0b"; casas[7][5] = "B2b"; casas[7][6] = "H2b"; casas[7][7] = "T2b";
-    }
-
-    public void mostrar() {
-        System.out.println("---------------------------------");
-        for (int i = 0; i < 8; i++) {
-            System.out.print("|");
-            for (int j = 0; j < 8; j++) {
-                System.out.print(casas[i][j] + "|");
-            }
-            System.out.println("\n---------------------------------");
+        if (pecaParaMover == null) {
+            System.out.println("Peça não encontrada no tabuleiro!");
+            return false;
         }
-    }
 
-    public boolean acouboOJogo() {
-        jogadasSimuladas++;
-        return jogadasSimuladas > 4; 
+        if (!casaLivre(casaDestino)) {
+            System.out.println("Não pode mover a peça porque já existe outra peça na casa de destino.");
+            return false;
+        }
+
+        casas[linDestino][colDestino] = pecaParaMover;
+        casas[linAtual][colAtual] = null;
+        return true;
     }
 }
